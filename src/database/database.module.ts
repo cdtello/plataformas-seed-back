@@ -10,7 +10,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         const dbType = configService.get<string>('DB_TYPE') || 'sqlite';
 
         const baseConfig = {
-          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+          entities: [
+            __dirname + '/../users/entities/*.entity{.ts,.js}',
+            __dirname + '/../profiles/entities/*.entity{.ts,.js}',
+            __dirname + '/../routines/entities/*.entity{.ts,.js}',
+            __dirname + '/../exercises/entities/*.entity{.ts,.js}',
+          ],
           synchronize: configService.get<string>('DB_SYNCHRONIZE') === 'true',
           logging: configService.get<string>('DB_LOGGING') === 'true',
         };
