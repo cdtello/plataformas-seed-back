@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
-// import { Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 /**
  * Enum para los objetivos del usuario
@@ -32,13 +40,20 @@ export class Profile {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // TODO: Implementar columnas
-  // - @Column({ type: 'enum', enum: Goal, default: Goal.MAINTAIN }) goal: Goal;
-  // - @Column({ type: 'enum', enum: ActivityLevel, default: ActivityLevel.MODERATE }) activityLevel: ActivityLevel;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) createdAt: Date;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) updatedAt: Date;
+  @Column({ type: 'varchar', length: 20, default: Goal.MAINTAIN })
+  goal: Goal;
 
-  // TODO: Implementar relaciones
-  // - @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
-  // - @JoinColumn()
+  @Column({ type: 'varchar', length: 20, default: ActivityLevel.MODERATE })
+  activityLevel: ActivityLevel;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  // Relaciones
+  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  user: User;
 }

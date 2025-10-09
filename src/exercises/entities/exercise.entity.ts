@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
-// import { Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { WeeklyRoutine } from '../../routines/entities/weekly-routine.entity';
 
 /**
  * Entidad Exercise - Catálogo de ejercicios disponibles en la aplicación
@@ -12,13 +19,22 @@ export class Exercise {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // TODO: Implementar columnas
-  // - @Column({ type: 'varchar', length: 100 }) name: string;
-  // - @Column({ type: 'text' }) reps: string;
-  // - @Column({ type: 'varchar', length: 500, nullable: true }) videoUrl: string;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) createdAt: Date;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) updatedAt: Date;
+  @Column({ type: 'varchar', length: 100 })
+  name: string;
 
-  // TODO: Implementar relaciones
-  // - @ManyToMany(() => WeeklyRoutine, (weeklyRoutine) => weeklyRoutine.exercises)
+  @Column({ type: 'text' })
+  reps: string;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  videoUrl: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  // Relaciones
+  @ManyToMany(() => WeeklyRoutine, (weeklyRoutine) => weeklyRoutine.exercises)
+  weeklyRoutines: WeeklyRoutine[];
 }

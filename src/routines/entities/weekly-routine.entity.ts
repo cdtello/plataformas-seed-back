@@ -1,5 +1,16 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
-// import { Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { Exercise } from '../../exercises/entities/exercise.entity';
 
 /**
  * Enum para los días de la semana
@@ -26,16 +37,37 @@ export class WeeklyRoutine {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // TODO: Implementar columnas
-  // - @Column({ type: 'enum', enum: DayOfWeek }) dayOfWeek: DayOfWeek;
-  // - @Column({ type: 'boolean', default: false }) completed: boolean;
-  // - @Column({ type: 'text', nullable: true }) notes: string;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) createdAt: Date;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) updatedAt: Date;
+  @Column({ type: 'varchar', length: 20 })
+  dayOfWeek: DayOfWeek;
 
-  // TODO: Implementar relaciones
-  // - @ManyToOne(() => User, (user) => user.weeklyRoutines, { onDelete: 'CASCADE' })
-  // - @JoinColumn()
-  // - @ManyToMany(() => Exercise, (exercise) => exercise.weeklyRoutines)
-  // - @JoinTable({ name: 'weekly_routine_exercises', ... })
+  @Column({ type: 'boolean', default: false })
+  completed: boolean;
+
+  @Column({ type: 'text', nullable: true })
+  notes: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  // Relaciones
+  @ManyToOne(() => User, (user) => user.weeklyRoutines, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  user: User;
+
+  @ManyToMany(() => Exercise, (exercise) => exercise.weeklyRoutines)
+  @JoinTable({
+    name: 'weekly_routine_exercises',
+    joinColumn: {
+      name: 'weeklyRoutineId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'exerciseId',
+      referencedColumnName: 'id',
+    },
+  })
+  exercises: Exercise[];
 }

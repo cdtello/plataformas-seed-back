@@ -1,5 +1,14 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
-// import { Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Profile } from '../../profiles/entities/profile.entity';
+import { WeeklyRoutine } from '../../routines/entities/weekly-routine.entity';
 
 /**
  * Entidad User - Representa a cada usuario registrado en la aplicación
@@ -13,17 +22,36 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // TODO: Implementar columnas
-  // - @Column({ type: 'varchar', length: 100 }) name: string;
-  // - @Column({ type: 'varchar', length: 255, unique: true }) email: string;
-  // - @Column({ type: 'varchar', length: 255 }) password: string;
-  // - @Column({ type: 'int' }) age: number;
-  // - @Column({ type: 'decimal', precision: 5, scale: 2 }) weight: number;
-  // - @Column({ type: 'int' }) height: number;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) createdAt: Date;
-  // - @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }) updatedAt: Date;
+  @Column({ type: 'varchar', length: 100 })
+  name: string;
 
-  // TODO: Implementar relaciones
-  // - @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
-  // - @OneToMany(() => WeeklyRoutine, (weeklyRoutine) => weeklyRoutine.user, { cascade: true })
+  @Column({ type: 'varchar', length: 255, unique: true })
+  email: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  password: string;
+
+  @Column({ type: 'int' })
+  age: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  weight: number;
+
+  @Column({ type: 'int' })
+  height: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  // Relaciones
+  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
+  profile: Profile;
+
+  @OneToMany(() => WeeklyRoutine, (weeklyRoutine) => weeklyRoutine.user, {
+    cascade: true,
+  })
+  weeklyRoutines: WeeklyRoutine[];
 }

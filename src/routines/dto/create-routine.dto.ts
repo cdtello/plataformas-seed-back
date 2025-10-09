@@ -19,6 +19,9 @@ export class CreateRoutineDto {
   @IsString()
   notes?: string;
 
+  @IsNumber()
+  userId: number;
+
   @IsArray()
   @IsNumber({}, { each: true })
   exerciseIds: number[];

@@ -1,5 +1,14 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Param,
+  Body,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ProfilesService } from '../services/profiles.service';
+import { UpdateProfileDto } from '../dto/create-profile.dto';
+import { Profile } from '../entities/profile.entity';
 
 /**
  * Controlador de Perfiles
@@ -12,7 +21,24 @@ import { ProfilesService } from '../services/profiles.service';
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
-  // TODO: Implementar endpoints
-  // - findOne(@Param('userId') userId: string): Promise<Profile>
-  // - update(@Param('userId') userId: string, @Body() updateProfileDto: UpdateProfileDto): Promise<Profile>
+  /**
+   * Obtener el perfil de un usuario
+   */
+  @Get(':userId')
+  async findOne(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Profile> {
+    return this.profilesService.findOne(userId);
+  }
+
+  /**
+   * Actualizar el perfil de un usuario
+   */
+  @Patch(':userId')
+  async update(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ): Promise<Profile> {
+    return this.profilesService.update(userId, updateProfileDto);
+  }
 }

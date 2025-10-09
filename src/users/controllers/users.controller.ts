@@ -1,5 +1,17 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { UsersService } from '../services/users.service';
+import { CreateUserDto, UpdateUserDto } from '../dto/create-user.dto';
+import { User } from '../entities/user.entity';
+import { WeeklyRoutine } from '../../routines/entities/weekly-routine.entity';
 
 /**
  * Controlador de Usuarios
@@ -16,11 +28,56 @@ import { UsersService } from '../services/users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // TODO: Implementar endpoints
-  // - create(@Body() createUserDto: CreateUserDto): Promise<User>
-  // - findAll(): Promise<User[]>
-  // - findOne(@Param('id') id: string): Promise<User>
-  // - update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User>
-  // - remove(@Param('id') id: string): Promise<void>
-  // - findUserRoutines(@Param('id') id: string): Promise<WeeklyRoutine[]>
+  /**
+   * Crear un nuevo usuario
+   */
+  @Post()
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUserDto);
+  }
+
+  /**
+   * Obtener todos los usuarios
+   */
+  @Get()
+  findAll(): Promise<User[]> {
+    return this.usersService.findAll();
+  }
+
+  /**
+   * Obtener un usuario por ID
+   */
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.usersService.findOne(id);
+  }
+
+  /**
+   * Actualizar un usuario
+   */
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  /**
+   * Eliminar un usuario
+   */
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.usersService.remove(id);
+  }
+
+  /**
+   * Obtener todas las rutinas de un usuario
+   */
+  @Get(':id/routines')
+  findUserRoutines(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<WeeklyRoutine[]> {
+    return this.usersService.findUserRoutines(id);
+  }
 }

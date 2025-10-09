@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Exercise } from '../entities/exercise.entity';
-// import {
-//   CreateExerciseDto,
-//   UpdateExerciseDto,
-// } from '../dto/create-exercise.dto';
+import {
+  CreateExerciseDto,
+  UpdateExerciseDto,
+} from '../dto/create-exercise.dto';
 
 /**
  * Servicio de Ejercicios
@@ -24,10 +24,59 @@ export class ExercisesService {
     private readonly exerciseRepository: Repository<Exercise>,
   ) {}
 
-  // TODO: Implementar métodos CRUD
-  // - create(createExerciseDto: CreateExerciseDto): Promise<Exercise>
-  // - findAll(): Promise<Exercise[]>
-  // - findOne(id: number): Promise<Exercise>
-  // - update(id: number, updateExerciseDto: UpdateExerciseDto): Promise<Exercise>
-  // - remove(id: number): Promise<void>
+  /**
+   * Crear un nuevo ejercicio
+   */
+  async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {
+    const exercise = this.exerciseRepository.create(createExerciseDto);
+    return this.exerciseRepository.save(exercise);
+  }
+
+  /**
+   * Obtener todos los ejercicios disponibles
+   */
+  async findAll(): Promise<Exercise[]> {
+    return this.exerciseRepository.find({
+      relations: ['weeklyRoutines'],
+    });
+  }
+
+  /**
+   * Obtener un ejercicio por ID
+   */
+  async findOne(id: number): Promise<Exercise> {
+    const exercise = await this.exerciseRepository.findOne({
+      where: { id },
+      relations: ['weeklyRoutines'],
+    });
+
+    if (!exercise) {
+      throw new NotFoundException(`Ejercicio con ID ${id} no encontrado`);
+    }
+
+    return exercise;
+  }
+
+  /**
+   * Actualizar un ejercicio existente
+   */
+  async update(
+    id: number,
+    updateExerciseDto: UpdateExerciseDto,
+  ): Promise<Exercise> {
+    const exercise = await this.findOne(id);
+
+    Object.assign(exercise, updateExerciseDto);
+    await this.exerciseRepository.save(exercise);
+
+    return this.findOne(id);
+  }
+
+  /**
+   * Eliminar un ejercicio
+   */
+  async remove(id: number): Promise<void> {
+    const exercise = await this.findOne(id);
+    await this.exerciseRepository.remove(exercise);
+  }
 }

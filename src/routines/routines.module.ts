@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WeeklyRoutine } from './entities/weekly-routine.entity';
+import { User } from '../users/entities/user.entity';
+import { Exercise } from '../exercises/entities/exercise.entity';
 import { RoutinesService } from './services/routines.service';
 import { RoutinesController } from './controllers/routines.controller';
 
@@ -13,7 +15,7 @@ import { RoutinesController } from './controllers/routines.controller';
  * - Relaciones con usuarios y ejercicios
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([WeeklyRoutine])],
+  imports: [TypeOrmModule.forFeature([WeeklyRoutine, User, Exercise])],
   controllers: [RoutinesController],
   providers: [RoutinesService],
   exports: [RoutinesService],
